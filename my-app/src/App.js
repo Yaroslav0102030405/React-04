@@ -1,5 +1,6 @@
 // Модули
 import React, { Component } from 'react';
+import shortid from 'shortid';
 // Компоненты
 // import Counter from './components/Counter';
 // import Dropdown from './components/Dropdown';
@@ -11,6 +12,9 @@ import React, { Component } from 'react';
 import TodoList from './components/TodoList';
 import initialTodos from './components/TodoList/todos.json';
 
+// import Form from './components/Form';
+import TodoEditor from './components/TodoEditor';
+import Filter from './components/Filter';
 // Стили
 // import paintings from './paintings.json';
 // import './components/PaintingList/PaintingList.css';
@@ -26,8 +30,23 @@ import initialTodos from './components/TodoList/todos.json';
 // ];
 
 class App extends Component {
+  // храним заняения
   state = {
     todos: initialTodos,
+    filter: ''
+  };
+
+  addTodo = text => {
+    const todo = {
+      id: shortid.generate(),
+      text,
+      completed: false,
+    };
+
+    // операция по добавлению
+    this.setState(prevState => ({
+      todos: [todo, ...prevState.todos],
+    }));
   };
 
   deleteTodo = todoId => {
@@ -36,64 +55,35 @@ class App extends Component {
     }));
   };
 
+  changeFilter = e => {
+    this.setState({ filter: e.currentTarget.value });
+  };
+
+  formSubmitHandler = data => {
+    console.log(data);
+  };
+
+ 
+
   render() {
-    const { todos } = this.state;
+    const { todos, filter } = this.state;
 
-    const completedTodos = todos.reduce(
-      (total, todo) => (todo.completed ? total + 1 : total),
-      0,
-    );
-
+    // const completedTodos = todos.reduce(
+    //   (total, todo) => (todo.completed ? total + 1 : total),
+    //   0,
+    // );
     return (
       <>
-        <h1>Состояние компонента</h1>
+        <Filter value={filter} onChange={this.changeFilter} />
+        <TodoEditor onSubmit={this.addTodo} />
 
-        <div>
-          <p>Общее количество: {todos.length}</p>
-          <p>Количество выполненных:{completedTodos}</p>
-        </div>
         <TodoList todos={todos} onDeleteTodo={this.deleteTodo} />
+
+        {/* <Form onSubmit={this.formSubmitHandler} /> */}
+        {/* <Form onSubmit={this.formSubmitHandler} /> */}
       </>
     );
   }
 }
-
-// const App = () => {
-//   return (
-//     <React.Fragment>
-//     {/* <AppBar /> */}
-
-//     <h1>Состояние компонента</h1>
-//     <Counter />
-
-//     <h2>Новое</h2>
-
-//     <Dropdown />
-
-//     <ColorPicker options={colorPickerOptions} />
-
-//     {/* <Container>
-
-//       <ColorPicker options={colorPickerOptions} />
-
-//       <Notification text="Все хорошо" type="error" />
-
-//       <Notification text="Все плохо" type="success" />
-
-//       <Panel title="Последние новости">
-//         <p>fdgdfgfhfghjhjkhjkjhkhjkh</p>
-//         <a href="https://www.youtube.com/@itgid/playlists">Читать...</a>
-//       </Panel>
-
-//       <Panel>
-//         <p>fdgdfgfhfghjhjkhjkjhkhjkh</p>
-//       </Panel>
-
-//       <h1>Главный компонент-контейнер приложения</h1>
-//       <PaintingList paintings={paintings} />
-//     </Container> */}
-//     </React.Fragment>
-//   );
-// };
 
 export default App;
