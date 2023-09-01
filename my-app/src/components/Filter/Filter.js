@@ -7,5 +7,4 @@ const Filter = ({ value, onChange }) => {
   </label>;
 };
 
-
-export default Filter
+export default Filter;

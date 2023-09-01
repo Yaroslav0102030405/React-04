@@ -14,7 +14,7 @@ import initialTodos from './components/TodoList/todos.json';
 
 // import Form from './components/Form';
 import TodoEditor from './components/TodoEditor';
-import Filter from './components/Filter';
+// import Filter from './components/Filter';
 // Стили
 // import paintings from './paintings.json';
 // import './components/PaintingList/PaintingList.css';
@@ -33,7 +33,7 @@ class App extends Component {
   // храним заняения
   state = {
     todos: initialTodos,
-    filter: ''
+    filter: '',
   };
 
   addTodo = text => {
@@ -49,12 +49,6 @@ class App extends Component {
     }));
   };
 
-  deleteTodo = todoId => {
-    this.setState(prevState => ({
-      todos: prevState.todos.filter(todo => todo.id !== todoId),
-    }));
-  };
-
   changeFilter = e => {
     this.setState({ filter: e.currentTarget.value });
   };
@@ -63,21 +57,46 @@ class App extends Component {
     console.log(data);
   };
 
- 
+  deleteTodo = todoId => {
+    this.setState(prevState => ({
+      todos: prevState.todos.filter(todo => todo.id !== todoId),
+    }));
+  };
+
+  toggleCompleted = todoId => {
+    console.log(todoId);
+  };
 
   render() {
     const { todos, filter } = this.state;
 
-    // const completedTodos = todos.reduce(
-    //   (total, todo) => (todo.completed ? total + 1 : total),
-    //   0,
-    // );
+    // const totalTodoCount = todos.length;
+    const completedTodoCount = todos.reduce(
+      (total, todo) => (todo.completed ? total + 1 : total),
+      0,
+    );
+
+    const normalizedFilter = this.state.filter.toLowerCase();
+
+    const visibleTodos = this.state.todos.filter(todo =>
+      todo.text.toLowerCase().includes(normalizedFilter),
+    );
+
     return (
       <>
-        <Filter value={filter} onChange={this.changeFilter} />
         <TodoEditor onSubmit={this.addTodo} />
+        <h1>Головна</h1>
+        <label>
+          Фильтр по имени
+          <input type="text" value={filter} onChange={this.changeFilter} />
+        </label>
+        {/* ;<Filter value={filter} onChange={this.changeFilter} /> */}
 
-        <TodoList todos={todos} onDeleteTodo={this.deleteTodo} />
+        <TodoList
+          todos={visibleTodos}
+          onDeleteTodo={this.deleteTodo}
+          onToggleCompleted={this.toggleCompleted}
+        />
 
         {/* <Form onSubmit={this.formSubmitHandler} /> */}
         {/* <Form onSubmit={this.formSubmitHandler} /> */}
